@@ -8,6 +8,7 @@ import Html.Events exposing (onClick)
 import Random
 import Svg exposing (Svg, rect, svg)
 import Svg.Attributes exposing (fill, height, stroke, viewBox, width, x, y)
+import Time
 
 
 type alias Model =
@@ -31,6 +32,7 @@ init _ =
 
 type Msg
     = ToggleRunning
+    | Tick
     | FlipRandomSpin
     | GotRandomIndex Int
 
@@ -68,7 +70,7 @@ update msg model =
         ToggleRunning ->
             ( { model | running = not model.running }, Cmd.none )
 
-        FlipRandomSpin ->
+        Tick ->
             if model.running then
                 ( model
                 , Random.generate GotRandomIndex (Random.int 0 (Array.length model.spins - 1))
@@ -76,6 +78,11 @@ update msg model =
 
             else
                 ( model, Cmd.none )
+
+        FlipRandomSpin ->
+            ( model
+            , Random.generate GotRandomIndex (Random.int 0 (Array.length model.spins - 1))
+            )
 
         GotRandomIndex index ->
             ( { model | spins = flipSpinAt index model.spins }, Cmd.none )
@@ -140,8 +147,12 @@ flipSpin spin =
 
 
 subscriptions : Model -> Sub Msg
-subscriptions _ =
-    Sub.none
+subscriptions model =
+    if model.running then
+        Time.every 200 (\_ -> Tick)
+
+    else
+        Sub.none
 
 
 viewSpinGrid : Model -> Html Msg
