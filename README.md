@@ -47,3 +47,23 @@ Install Elm:
 ```bash
 npm install -g elm
 ```
+
+Run locally:
+
+```bash
+elm reactor
+```
+
+or build directly:
+
+```bash
+elm make src/Main.elm --output=main.js
+```
+
+or use make.sh
+
+## Why Elm?
+
+Symmetro was built partly as an experiment in using Elm for interactive scientific visualization.
+
+Elm’s pure architecture maps surprisingly well onto Monte Carlo simulations and immutable state transitions.
