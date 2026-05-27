@@ -4381,6 +4381,43 @@ function _Browser_load(url)
 
 
 
+var _Bitwise_and = F2(function(a, b)
+{
+	return a & b;
+});
+
+var _Bitwise_or = F2(function(a, b)
+{
+	return a | b;
+});
+
+var _Bitwise_xor = F2(function(a, b)
+{
+	return a ^ b;
+});
+
+function _Bitwise_complement(a)
+{
+	return ~a;
+};
+
+var _Bitwise_shiftLeftBy = F2(function(offset, a)
+{
+	return a << offset;
+});
+
+var _Bitwise_shiftRightBy = F2(function(offset, a)
+{
+	return a >> offset;
+});
+
+var _Bitwise_shiftRightZfBy = F2(function(offset, a)
+{
+	return a >>> offset;
+});
+
+
+
 function _Time_now(millisToPosix)
 {
 	return _Scheduler_binding(function(callback)
@@ -4424,43 +4461,6 @@ function _Time_getZoneName()
 		callback(_Scheduler_succeed(name));
 	});
 }
-
-
-
-var _Bitwise_and = F2(function(a, b)
-{
-	return a & b;
-});
-
-var _Bitwise_or = F2(function(a, b)
-{
-	return a | b;
-});
-
-var _Bitwise_xor = F2(function(a, b)
-{
-	return a ^ b;
-});
-
-function _Bitwise_complement(a)
-{
-	return ~a;
-};
-
-var _Bitwise_shiftLeftBy = F2(function(offset, a)
-{
-	return a << offset;
-});
-
-var _Bitwise_shiftRightBy = F2(function(offset, a)
-{
-	return a >> offset;
-});
-
-var _Bitwise_shiftRightZfBy = F2(function(offset, a)
-{
-	return a >>> offset;
-});
 var $elm$core$Basics$EQ = {$: 'EQ'};
 var $elm$core$Basics$GT = {$: 'GT'};
 var $elm$core$Basics$LT = {$: 'LT'};
@@ -5250,52 +5250,208 @@ var $elm$core$Task$perform = F2(
 				A2($elm$core$Task$map, toMessage, task)));
 	});
 var $elm$browser$Browser$element = _Browser_element;
-var $author$project$Main$Down = {$: 'Down'};
-var $author$project$Main$Up = {$: 'Up'};
-var $elm$core$Array$fromListHelp = F3(
-	function (list, nodeList, nodeListSize) {
-		fromListHelp:
+var $author$project$Main$GotInitialSpins = function (a) {
+	return {$: 'GotInitialSpins', a: a};
+};
+var $elm$random$Random$Generate = function (a) {
+	return {$: 'Generate', a: a};
+};
+var $elm$random$Random$Seed = F2(
+	function (a, b) {
+		return {$: 'Seed', a: a, b: b};
+	});
+var $elm$core$Bitwise$shiftRightZfBy = _Bitwise_shiftRightZfBy;
+var $elm$random$Random$next = function (_v0) {
+	var state0 = _v0.a;
+	var incr = _v0.b;
+	return A2($elm$random$Random$Seed, ((state0 * 1664525) + incr) >>> 0, incr);
+};
+var $elm$random$Random$initialSeed = function (x) {
+	var _v0 = $elm$random$Random$next(
+		A2($elm$random$Random$Seed, 0, 1013904223));
+	var state1 = _v0.a;
+	var incr = _v0.b;
+	var state2 = (state1 + x) >>> 0;
+	return $elm$random$Random$next(
+		A2($elm$random$Random$Seed, state2, incr));
+};
+var $elm$time$Time$Name = function (a) {
+	return {$: 'Name', a: a};
+};
+var $elm$time$Time$Offset = function (a) {
+	return {$: 'Offset', a: a};
+};
+var $elm$time$Time$Zone = F2(
+	function (a, b) {
+		return {$: 'Zone', a: a, b: b};
+	});
+var $elm$time$Time$customZone = $elm$time$Time$Zone;
+var $elm$time$Time$Posix = function (a) {
+	return {$: 'Posix', a: a};
+};
+var $elm$time$Time$millisToPosix = $elm$time$Time$Posix;
+var $elm$time$Time$now = _Time_now($elm$time$Time$millisToPosix);
+var $elm$time$Time$posixToMillis = function (_v0) {
+	var millis = _v0.a;
+	return millis;
+};
+var $elm$random$Random$init = A2(
+	$elm$core$Task$andThen,
+	function (time) {
+		return $elm$core$Task$succeed(
+			$elm$random$Random$initialSeed(
+				$elm$time$Time$posixToMillis(time)));
+	},
+	$elm$time$Time$now);
+var $elm$random$Random$step = F2(
+	function (_v0, seed) {
+		var generator = _v0.a;
+		return generator(seed);
+	});
+var $elm$random$Random$onEffects = F3(
+	function (router, commands, seed) {
+		if (!commands.b) {
+			return $elm$core$Task$succeed(seed);
+		} else {
+			var generator = commands.a.a;
+			var rest = commands.b;
+			var _v1 = A2($elm$random$Random$step, generator, seed);
+			var value = _v1.a;
+			var newSeed = _v1.b;
+			return A2(
+				$elm$core$Task$andThen,
+				function (_v2) {
+					return A3($elm$random$Random$onEffects, router, rest, newSeed);
+				},
+				A2($elm$core$Platform$sendToApp, router, value));
+		}
+	});
+var $elm$random$Random$onSelfMsg = F3(
+	function (_v0, _v1, seed) {
+		return $elm$core$Task$succeed(seed);
+	});
+var $elm$random$Random$Generator = function (a) {
+	return {$: 'Generator', a: a};
+};
+var $elm$random$Random$map = F2(
+	function (func, _v0) {
+		var genA = _v0.a;
+		return $elm$random$Random$Generator(
+			function (seed0) {
+				var _v1 = genA(seed0);
+				var a = _v1.a;
+				var seed1 = _v1.b;
+				return _Utils_Tuple2(
+					func(a),
+					seed1);
+			});
+	});
+var $elm$random$Random$cmdMap = F2(
+	function (func, _v0) {
+		var generator = _v0.a;
+		return $elm$random$Random$Generate(
+			A2($elm$random$Random$map, func, generator));
+	});
+_Platform_effectManagers['Random'] = _Platform_createManager($elm$random$Random$init, $elm$random$Random$onEffects, $elm$random$Random$onSelfMsg, $elm$random$Random$cmdMap);
+var $elm$random$Random$command = _Platform_leaf('Random');
+var $elm$random$Random$generate = F2(
+	function (tagger, generator) {
+		return $elm$random$Random$command(
+			$elm$random$Random$Generate(
+				A2($elm$random$Random$map, tagger, generator)));
+	});
+var $elm$random$Random$listHelp = F4(
+	function (revList, n, gen, seed) {
+		listHelp:
 		while (true) {
-			var _v0 = A2($elm$core$Elm$JsArray$initializeFromList, $elm$core$Array$branchFactor, list);
-			var jsArray = _v0.a;
-			var remainingItems = _v0.b;
-			if (_Utils_cmp(
-				$elm$core$Elm$JsArray$length(jsArray),
-				$elm$core$Array$branchFactor) < 0) {
-				return A2(
-					$elm$core$Array$builderToArray,
-					true,
-					{nodeList: nodeList, nodeListSize: nodeListSize, tail: jsArray});
+			if (n < 1) {
+				return _Utils_Tuple2(revList, seed);
 			} else {
-				var $temp$list = remainingItems,
-					$temp$nodeList = A2(
-					$elm$core$List$cons,
-					$elm$core$Array$Leaf(jsArray),
-					nodeList),
-					$temp$nodeListSize = nodeListSize + 1;
-				list = $temp$list;
-				nodeList = $temp$nodeList;
-				nodeListSize = $temp$nodeListSize;
-				continue fromListHelp;
+				var _v0 = gen(seed);
+				var value = _v0.a;
+				var newSeed = _v0.b;
+				var $temp$revList = A2($elm$core$List$cons, value, revList),
+					$temp$n = n - 1,
+					$temp$gen = gen,
+					$temp$seed = newSeed;
+				revList = $temp$revList;
+				n = $temp$n;
+				gen = $temp$gen;
+				seed = $temp$seed;
+				continue listHelp;
 			}
 		}
 	});
-var $elm$core$Array$fromList = function (list) {
-	if (!list.b) {
-		return $elm$core$Array$empty;
-	} else {
-		return A3($elm$core$Array$fromListHelp, list, _List_Nil, 0);
-	}
+var $elm$random$Random$list = F2(
+	function (n, _v0) {
+		var gen = _v0.a;
+		return $elm$random$Random$Generator(
+			function (seed) {
+				return A4($elm$random$Random$listHelp, _List_Nil, n, gen, seed);
+			});
+	});
+var $author$project$Main$Down = {$: 'Down'};
+var $author$project$Main$Up = {$: 'Up'};
+var $elm$core$Bitwise$and = _Bitwise_and;
+var $elm$core$Basics$negate = function (n) {
+	return -n;
 };
-var $author$project$Main$initialSpins = $elm$core$Array$fromList(
-	_List_fromArray(
-		[$author$project$Main$Up, $author$project$Main$Down, $author$project$Main$Up, $author$project$Main$Down, $author$project$Main$Down, $author$project$Main$Up, $author$project$Main$Down, $author$project$Main$Up, $author$project$Main$Up, $author$project$Main$Up, $author$project$Main$Down, $author$project$Main$Down, $author$project$Main$Down, $author$project$Main$Down, $author$project$Main$Up, $author$project$Main$Up]));
-var $elm$core$Platform$Cmd$batch = _Platform_batch;
-var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
+var $elm$core$Bitwise$xor = _Bitwise_xor;
+var $elm$random$Random$peel = function (_v0) {
+	var state = _v0.a;
+	var word = (state ^ (state >>> ((state >>> 28) + 4))) * 277803737;
+	return ((word >>> 22) ^ word) >>> 0;
+};
+var $elm$random$Random$int = F2(
+	function (a, b) {
+		return $elm$random$Random$Generator(
+			function (seed0) {
+				var _v0 = (_Utils_cmp(a, b) < 0) ? _Utils_Tuple2(a, b) : _Utils_Tuple2(b, a);
+				var lo = _v0.a;
+				var hi = _v0.b;
+				var range = (hi - lo) + 1;
+				if (!((range - 1) & range)) {
+					return _Utils_Tuple2(
+						(((range - 1) & $elm$random$Random$peel(seed0)) >>> 0) + lo,
+						$elm$random$Random$next(seed0));
+				} else {
+					var threshhold = (((-range) >>> 0) % range) >>> 0;
+					var accountForBias = function (seed) {
+						accountForBias:
+						while (true) {
+							var x = $elm$random$Random$peel(seed);
+							var seedN = $elm$random$Random$next(seed);
+							if (_Utils_cmp(x, threshhold) < 0) {
+								var $temp$seed = seedN;
+								seed = $temp$seed;
+								continue accountForBias;
+							} else {
+								return _Utils_Tuple2((x % range) + lo, seedN);
+							}
+						}
+					};
+					return accountForBias(seed0);
+				}
+			});
+	});
+var $author$project$Main$randomSpin = A2(
+	$elm$random$Random$map,
+	function (value) {
+		return (value === 1) ? $author$project$Main$Up : $author$project$Main$Down;
+	},
+	A2($elm$random$Random$int, 0, 1));
+var $author$project$Main$randomSpins = function (count) {
+	return A2($elm$random$Random$list, count, $author$project$Main$randomSpin);
+};
 var $author$project$Main$init = function (_v0) {
+	var initialWidth = 50;
+	var initialHeight = 50;
 	return _Utils_Tuple2(
-		{height: 4, running: false, spins: $author$project$Main$initialSpins, width: 4},
-		$elm$core$Platform$Cmd$none);
+		{height: initialHeight, running: false, spins: $elm$core$Array$empty, temperature: 2.5, updatesPerSecond: 10000, width: initialWidth},
+		A2(
+			$elm$random$Random$generate,
+			$author$project$Main$GotInitialSpins,
+			$author$project$Main$randomSpins(initialWidth * initialHeight)));
 };
 var $author$project$Main$Tick = {$: 'Tick'};
 var $elm$time$Time$Every = F2(
@@ -5559,17 +5715,6 @@ var $elm$core$Dict$merge = F6(
 			leftovers);
 	});
 var $elm$core$Platform$sendToSelf = _Platform_sendToSelf;
-var $elm$time$Time$Name = function (a) {
-	return {$: 'Name', a: a};
-};
-var $elm$time$Time$Offset = function (a) {
-	return {$: 'Offset', a: a};
-};
-var $elm$time$Time$Zone = F2(
-	function (a, b) {
-		return {$: 'Zone', a: a, b: b};
-	});
-var $elm$time$Time$customZone = $elm$time$Time$Zone;
 var $elm$time$Time$setInterval = _Time_setInterval;
 var $elm$core$Process$spawn = _Scheduler_spawn;
 var $elm$time$Time$spawnHelp = F3(
@@ -5660,11 +5805,6 @@ var $elm$time$Time$onEffects = F3(
 				},
 				killTask));
 	});
-var $elm$time$Time$Posix = function (a) {
-	return {$: 'Posix', a: a};
-};
-var $elm$time$Time$millisToPosix = $elm$time$Time$Posix;
-var $elm$time$Time$now = _Time_now($elm$time$Time$millisToPosix);
 var $elm$time$Time$onSelfMsg = F3(
 	function (router, interval, state) {
 		var _v0 = A2($elm$core$Dict$get, interval, state.taggers);
@@ -5718,23 +5858,21 @@ var $elm$core$Platform$Sub$none = $elm$core$Platform$Sub$batch(_List_Nil);
 var $author$project$Main$subscriptions = function (model) {
 	return model.running ? A2(
 		$elm$time$Time$every,
-		200,
+		10,
 		function (_v0) {
 			return $author$project$Main$Tick;
 		}) : $elm$core$Platform$Sub$none;
 };
+var $author$project$Main$GotAcceptance = F2(
+	function (a, b) {
+		return {$: 'GotAcceptance', a: a, b: b};
+	});
+var $author$project$Main$GotProposals = function (a) {
+	return {$: 'GotProposals', a: a};
+};
 var $author$project$Main$GotRandomIndex = function (a) {
 	return {$: 'GotRandomIndex', a: a};
 };
-var $author$project$Main$flipSpin = function (spin) {
-	if (spin.$ === 'Up') {
-		return $author$project$Main$Down;
-	} else {
-		return $author$project$Main$Up;
-	}
-};
-var $elm$core$Bitwise$and = _Bitwise_and;
-var $elm$core$Bitwise$shiftRightZfBy = _Bitwise_shiftRightZfBy;
 var $elm$core$Array$bitMask = 4294967295 >>> (32 - $elm$core$Array$shiftStep);
 var $elm$core$Basics$ge = _Utils_ge;
 var $elm$core$Elm$JsArray$unsafeGet = _JsArray_unsafeGet;
@@ -5775,6 +5913,55 @@ var $elm$core$Array$get = F2(
 			A2($elm$core$Elm$JsArray$unsafeGet, $elm$core$Array$bitMask & index, tail)) : $elm$core$Maybe$Just(
 			A3($elm$core$Array$getHelp, startShift, index, tree)));
 	});
+var $elm$core$Basics$modBy = _Basics_modBy;
+var $author$project$Main$spinValue = function (spin) {
+	if (spin.$ === 'Up') {
+		return 1;
+	} else {
+		return -1;
+	}
+};
+var $author$project$Main$neighborSumForSpins = F4(
+	function (gridWidth, gridHeight, index, spins) {
+		var row = (index / gridWidth) | 0;
+		var idx = F2(
+			function (r, c) {
+				return (A2($elm$core$Basics$modBy, gridHeight, r) * gridWidth) + A2($elm$core$Basics$modBy, gridWidth, c);
+			});
+		var getSpinValue = function (i) {
+			var _v0 = A2($elm$core$Array$get, i, spins);
+			if (_v0.$ === 'Just') {
+				var spin = _v0.a;
+				return $author$project$Main$spinValue(spin);
+			} else {
+				return 0;
+			}
+		};
+		var col = A2($elm$core$Basics$modBy, gridWidth, index);
+		return ((getSpinValue(
+			A2(idx, row - 1, col)) + getSpinValue(
+			A2(idx, row + 1, col))) + getSpinValue(
+			A2(idx, row, col - 1))) + getSpinValue(
+			A2(idx, row, col + 1));
+	});
+var $author$project$Main$deltaEnergyForSpins = F4(
+	function (gridWidth, gridHeight, index, spins) {
+		var _v0 = A2($elm$core$Array$get, index, spins);
+		if (_v0.$ === 'Just') {
+			var spin = _v0.a;
+			return 2 * ($author$project$Main$spinValue(spin) * A4($author$project$Main$neighborSumForSpins, gridWidth, gridHeight, index, spins));
+		} else {
+			return 0;
+		}
+	});
+var $elm$core$Basics$e = _Basics_e;
+var $author$project$Main$flipSpin = function (spin) {
+	if (spin.$ === 'Up') {
+		return $author$project$Main$Down;
+	} else {
+		return $author$project$Main$Up;
+	}
+};
 var $elm$core$Elm$JsArray$unsafeSet = _JsArray_unsafeSet;
 var $elm$core$Array$setHelp = F4(
 	function (shift, index, value, tree) {
@@ -5832,142 +6019,121 @@ var $author$project$Main$flipSpinAt = F2(
 			return spins;
 		}
 	});
-var $elm$random$Random$Generate = function (a) {
-	return {$: 'Generate', a: a};
+var $elm$core$Basics$pow = _Basics_pow;
+var $author$project$Main$applyProposal = F3(
+	function (model, proposal, spins) {
+		var dE = A4($author$project$Main$deltaEnergyForSpins, model.width, model.height, proposal.index, spins);
+		var accept = (dE <= 0) || (_Utils_cmp(
+			proposal.r,
+			A2($elm$core$Basics$pow, $elm$core$Basics$e, (-dE) / model.temperature)) < 0);
+		return accept ? A2($author$project$Main$flipSpinAt, proposal.index, spins) : spins;
+	});
+var $author$project$Main$applyProposals = F2(
+	function (model, proposals) {
+		return A3(
+			$elm$core$List$foldl,
+			$author$project$Main$applyProposal(model),
+			model.spins,
+			proposals);
+	});
+var $author$project$Main$deltaEnergy = F2(
+	function (index, model) {
+		return A4($author$project$Main$deltaEnergyForSpins, model.width, model.height, index, model.spins);
+	});
+var $elm$core$Basics$abs = function (n) {
+	return (n < 0) ? (-n) : n;
 };
-var $elm$random$Random$Seed = F2(
+var $elm$random$Random$float = F2(
 	function (a, b) {
-		return {$: 'Seed', a: a, b: b};
+		return $elm$random$Random$Generator(
+			function (seed0) {
+				var seed1 = $elm$random$Random$next(seed0);
+				var range = $elm$core$Basics$abs(b - a);
+				var n1 = $elm$random$Random$peel(seed1);
+				var n0 = $elm$random$Random$peel(seed0);
+				var lo = (134217727 & n1) * 1.0;
+				var hi = (67108863 & n0) * 1.0;
+				var val = ((hi * 134217728.0) + lo) / 9007199254740992.0;
+				var scaled = (val * range) + a;
+				return _Utils_Tuple2(
+					scaled,
+					$elm$random$Random$next(seed1));
+			});
 	});
-var $elm$random$Random$next = function (_v0) {
-	var state0 = _v0.a;
-	var incr = _v0.b;
-	return A2($elm$random$Random$Seed, ((state0 * 1664525) + incr) >>> 0, incr);
-};
-var $elm$random$Random$initialSeed = function (x) {
-	var _v0 = $elm$random$Random$next(
-		A2($elm$random$Random$Seed, 0, 1013904223));
-	var state1 = _v0.a;
-	var incr = _v0.b;
-	var state2 = (state1 + x) >>> 0;
-	return $elm$random$Random$next(
-		A2($elm$random$Random$Seed, state2, incr));
-};
-var $elm$time$Time$posixToMillis = function (_v0) {
-	var millis = _v0.a;
-	return millis;
-};
-var $elm$random$Random$init = A2(
-	$elm$core$Task$andThen,
-	function (time) {
-		return $elm$core$Task$succeed(
-			$elm$random$Random$initialSeed(
-				$elm$time$Time$posixToMillis(time)));
-	},
-	$elm$time$Time$now);
-var $elm$random$Random$step = F2(
-	function (_v0, seed) {
-		var generator = _v0.a;
-		return generator(seed);
-	});
-var $elm$random$Random$onEffects = F3(
-	function (router, commands, seed) {
-		if (!commands.b) {
-			return $elm$core$Task$succeed(seed);
-		} else {
-			var generator = commands.a.a;
-			var rest = commands.b;
-			var _v1 = A2($elm$random$Random$step, generator, seed);
-			var value = _v1.a;
-			var newSeed = _v1.b;
-			return A2(
-				$elm$core$Task$andThen,
-				function (_v2) {
-					return A3($elm$random$Random$onEffects, router, rest, newSeed);
-				},
-				A2($elm$core$Platform$sendToApp, router, value));
+var $elm$core$Array$fromListHelp = F3(
+	function (list, nodeList, nodeListSize) {
+		fromListHelp:
+		while (true) {
+			var _v0 = A2($elm$core$Elm$JsArray$initializeFromList, $elm$core$Array$branchFactor, list);
+			var jsArray = _v0.a;
+			var remainingItems = _v0.b;
+			if (_Utils_cmp(
+				$elm$core$Elm$JsArray$length(jsArray),
+				$elm$core$Array$branchFactor) < 0) {
+				return A2(
+					$elm$core$Array$builderToArray,
+					true,
+					{nodeList: nodeList, nodeListSize: nodeListSize, tail: jsArray});
+			} else {
+				var $temp$list = remainingItems,
+					$temp$nodeList = A2(
+					$elm$core$List$cons,
+					$elm$core$Array$Leaf(jsArray),
+					nodeList),
+					$temp$nodeListSize = nodeListSize + 1;
+				list = $temp$list;
+				nodeList = $temp$nodeList;
+				nodeListSize = $temp$nodeListSize;
+				continue fromListHelp;
+			}
 		}
 	});
-var $elm$random$Random$onSelfMsg = F3(
-	function (_v0, _v1, seed) {
-		return $elm$core$Task$succeed(seed);
-	});
-var $elm$random$Random$Generator = function (a) {
-	return {$: 'Generator', a: a};
+var $elm$core$Array$fromList = function (list) {
+	if (!list.b) {
+		return $elm$core$Array$empty;
+	} else {
+		return A3($elm$core$Array$fromListHelp, list, _List_Nil, 0);
+	}
 };
-var $elm$random$Random$map = F2(
-	function (func, _v0) {
-		var genA = _v0.a;
-		return $elm$random$Random$Generator(
-			function (seed0) {
-				var _v1 = genA(seed0);
-				var a = _v1.a;
-				var seed1 = _v1.b;
-				return _Utils_Tuple2(
-					func(a),
-					seed1);
-			});
-	});
-var $elm$random$Random$cmdMap = F2(
-	function (func, _v0) {
-		var generator = _v0.a;
-		return $elm$random$Random$Generate(
-			A2($elm$random$Random$map, func, generator));
-	});
-_Platform_effectManagers['Random'] = _Platform_createManager($elm$random$Random$init, $elm$random$Random$onEffects, $elm$random$Random$onSelfMsg, $elm$random$Random$cmdMap);
-var $elm$random$Random$command = _Platform_leaf('Random');
-var $elm$random$Random$generate = F2(
-	function (tagger, generator) {
-		return $elm$random$Random$command(
-			$elm$random$Random$Generate(
-				A2($elm$random$Random$map, tagger, generator)));
-	});
-var $elm$core$Basics$negate = function (n) {
-	return -n;
-};
-var $elm$core$Bitwise$xor = _Bitwise_xor;
-var $elm$random$Random$peel = function (_v0) {
-	var state = _v0.a;
-	var word = (state ^ (state >>> ((state >>> 28) + 4))) * 277803737;
-	return ((word >>> 22) ^ word) >>> 0;
-};
-var $elm$random$Random$int = F2(
-	function (a, b) {
-		return $elm$random$Random$Generator(
-			function (seed0) {
-				var _v0 = (_Utils_cmp(a, b) < 0) ? _Utils_Tuple2(a, b) : _Utils_Tuple2(b, a);
-				var lo = _v0.a;
-				var hi = _v0.b;
-				var range = (hi - lo) + 1;
-				if (!((range - 1) & range)) {
-					return _Utils_Tuple2(
-						(((range - 1) & $elm$random$Random$peel(seed0)) >>> 0) + lo,
-						$elm$random$Random$next(seed0));
-				} else {
-					var threshhold = (((-range) >>> 0) % range) >>> 0;
-					var accountForBias = function (seed) {
-						accountForBias:
-						while (true) {
-							var x = $elm$random$Random$peel(seed);
-							var seedN = $elm$random$Random$next(seed);
-							if (_Utils_cmp(x, threshhold) < 0) {
-								var $temp$seed = seedN;
-								seed = $temp$seed;
-								continue accountForBias;
-							} else {
-								return _Utils_Tuple2((x % range) + lo, seedN);
-							}
-						}
-					};
-					return accountForBias(seed0);
-				}
-			});
-	});
 var $elm$core$Array$length = function (_v0) {
 	var len = _v0.a;
 	return len;
 };
+var $elm$core$Platform$Cmd$batch = _Platform_batch;
+var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
 var $elm$core$Basics$not = _Basics_not;
+var $author$project$Main$Proposal = F2(
+	function (index, r) {
+		return {index: index, r: r};
+	});
+var $elm$random$Random$map2 = F3(
+	function (func, _v0, _v1) {
+		var genA = _v0.a;
+		var genB = _v1.a;
+		return $elm$random$Random$Generator(
+			function (seed0) {
+				var _v2 = genA(seed0);
+				var a = _v2.a;
+				var seed1 = _v2.b;
+				var _v3 = genB(seed1);
+				var b = _v3.a;
+				var seed2 = _v3.b;
+				return _Utils_Tuple2(
+					A2(func, a, b),
+					seed2);
+			});
+	});
+var $author$project$Main$proposalGenerator = function (spinCount) {
+	return A3(
+		$elm$random$Random$map2,
+		$author$project$Main$Proposal,
+		A2($elm$random$Random$int, 0, spinCount - 1),
+		A2($elm$random$Random$float, 0, 1));
+};
+var $elm$core$String$toFloat = _String_toFloat;
+var $author$project$Main$updatesPerTick = function (model) {
+	return A2($elm$core$Basics$max, 1, (model.updatesPerSecond / 100) | 0);
+};
 var $author$project$Main$update = F2(
 	function (msg, model) {
 		switch (msg.$) {
@@ -5982,11 +6148,12 @@ var $author$project$Main$update = F2(
 					model,
 					A2(
 						$elm$random$Random$generate,
-						$author$project$Main$GotRandomIndex,
+						$author$project$Main$GotProposals,
 						A2(
-							$elm$random$Random$int,
-							0,
-							$elm$core$Array$length(model.spins) - 1))) : _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
+							$elm$random$Random$list,
+							$author$project$Main$updatesPerTick(model),
+							$author$project$Main$proposalGenerator(
+								$elm$core$Array$length(model.spins))))) : _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 			case 'FlipRandomSpin':
 				return _Utils_Tuple2(
 					model,
@@ -5997,22 +6164,97 @@ var $author$project$Main$update = F2(
 							$elm$random$Random$int,
 							0,
 							$elm$core$Array$length(model.spins) - 1)));
-			default:
+			case 'GotInitialSpins':
+				var spins = msg.a;
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{
+							spins: $elm$core$Array$fromList(spins)
+						}),
+					$elm$core$Platform$Cmd$none);
+			case 'GotRandomIndex':
 				var index = msg.a;
 				return _Utils_Tuple2(
+					model,
+					A2(
+						$elm$random$Random$generate,
+						$author$project$Main$GotAcceptance(index),
+						A2($elm$random$Random$float, 0, 1)));
+			case 'GotAcceptance':
+				var index = msg.a;
+				var r = msg.b;
+				var dE = A2($author$project$Main$deltaEnergy, index, model);
+				var accept = (dE <= 0) || (_Utils_cmp(
+					r,
+					A2($elm$core$Basics$pow, $elm$core$Basics$e, (-dE) / model.temperature)) < 0);
+				return accept ? _Utils_Tuple2(
 					_Utils_update(
 						model,
 						{
 							spins: A2($author$project$Main$flipSpinAt, index, model.spins)
 						}),
+					$elm$core$Platform$Cmd$none) : _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
+			case 'GotProposals':
+				var proposals = msg.a;
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{
+							spins: A2($author$project$Main$applyProposals, model, proposals)
+						}),
 					$elm$core$Platform$Cmd$none);
+			case 'SetTemperature':
+				var raw = msg.a;
+				var _v1 = $elm$core$String$toFloat(raw);
+				if (_v1.$ === 'Just') {
+					var temperature = _v1.a;
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{temperature: temperature}),
+						$elm$core$Platform$Cmd$none);
+				} else {
+					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
+				}
+			default:
+				var raw = msg.a;
+				var _v2 = $elm$core$String$toInt(raw);
+				if (_v2.$ === 'Just') {
+					var updatesPerSecond = _v2.a;
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{updatesPerSecond: updatesPerSecond}),
+						$elm$core$Platform$Cmd$none);
+				} else {
+					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
+				}
 		}
 	});
 var $author$project$Main$FlipRandomSpin = {$: 'FlipRandomSpin'};
+var $author$project$Main$SetTemperature = function (a) {
+	return {$: 'SetTemperature', a: a};
+};
+var $author$project$Main$SetUpdatesPerSecond = function (a) {
+	return {$: 'SetUpdatesPerSecond', a: a};
+};
 var $author$project$Main$ToggleRunning = {$: 'ToggleRunning'};
 var $elm$html$Html$button = _VirtualDom_node('button');
 var $elm$html$Html$div = _VirtualDom_node('div');
+var $elm$core$String$fromFloat = _String_fromNumber;
 var $elm$html$Html$h1 = _VirtualDom_node('h1');
+var $elm$html$Html$input = _VirtualDom_node('input');
+var $elm$json$Json$Encode$string = _Json_wrap;
+var $elm$html$Html$Attributes$stringProperty = F2(
+	function (key, string) {
+		return A2(
+			_VirtualDom_property,
+			key,
+			$elm$json$Json$Encode$string(string));
+	});
+var $elm$html$Html$Attributes$max = $elm$html$Html$Attributes$stringProperty('max');
+var $elm$html$Html$Attributes$min = $elm$html$Html$Attributes$stringProperty('min');
 var $elm$virtual_dom$VirtualDom$Normal = function (a) {
 	return {$: 'Normal', a: a};
 };
@@ -6030,10 +6272,48 @@ var $elm$html$Html$Events$onClick = function (msg) {
 		'click',
 		$elm$json$Json$Decode$succeed(msg));
 };
+var $elm$html$Html$Events$alwaysStop = function (x) {
+	return _Utils_Tuple2(x, true);
+};
+var $elm$virtual_dom$VirtualDom$MayStopPropagation = function (a) {
+	return {$: 'MayStopPropagation', a: a};
+};
+var $elm$html$Html$Events$stopPropagationOn = F2(
+	function (event, decoder) {
+		return A2(
+			$elm$virtual_dom$VirtualDom$on,
+			event,
+			$elm$virtual_dom$VirtualDom$MayStopPropagation(decoder));
+	});
+var $elm$json$Json$Decode$field = _Json_decodeField;
+var $elm$json$Json$Decode$at = F2(
+	function (fields, decoder) {
+		return A3($elm$core$List$foldr, $elm$json$Json$Decode$field, decoder, fields);
+	});
+var $elm$json$Json$Decode$string = _Json_decodeString;
+var $elm$html$Html$Events$targetValue = A2(
+	$elm$json$Json$Decode$at,
+	_List_fromArray(
+		['target', 'value']),
+	$elm$json$Json$Decode$string);
+var $elm$html$Html$Events$onInput = function (tagger) {
+	return A2(
+		$elm$html$Html$Events$stopPropagationOn,
+		'input',
+		A2(
+			$elm$json$Json$Decode$map,
+			$elm$html$Html$Events$alwaysStop,
+			A2($elm$json$Json$Decode$map, tagger, $elm$html$Html$Events$targetValue)));
+};
+var $elm$html$Html$Attributes$step = function (n) {
+	return A2($elm$html$Html$Attributes$stringProperty, 'step', n);
+};
 var $elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
 var $elm$html$Html$Attributes$style = $elm$virtual_dom$VirtualDom$style;
 var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
 var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
+var $elm$html$Html$Attributes$type_ = $elm$html$Html$Attributes$stringProperty('type');
+var $elm$html$Html$Attributes$value = $elm$html$Html$Attributes$stringProperty('value');
 var $elm$svg$Svg$Attributes$height = _VirtualDom_attribute('height');
 var $elm$core$Elm$JsArray$foldl = _JsArray_foldl;
 var $elm$core$Elm$JsArray$indexedMap = _JsArray_indexedMap;
@@ -6078,7 +6358,6 @@ var $elm$svg$Svg$trustedNode = _VirtualDom_nodeNS('http://www.w3.org/2000/svg');
 var $elm$svg$Svg$svg = $elm$svg$Svg$trustedNode('svg');
 var $elm$svg$Svg$Attributes$viewBox = _VirtualDom_attribute('viewBox');
 var $elm$svg$Svg$Attributes$fill = _VirtualDom_attribute('fill');
-var $elm$core$Basics$modBy = _Basics_modBy;
 var $elm$svg$Svg$rect = $elm$svg$Svg$trustedNode('rect');
 var $author$project$Main$spinColor = function (spin) {
 	if (spin.$ === 'Up') {
@@ -6114,7 +6393,7 @@ var $author$project$Main$viewSpinCell = F4(
 			_List_Nil);
 	});
 var $author$project$Main$viewSpinGrid = function (model) {
-	var cellSize = 28;
+	var cellSize = 12;
 	var gridHeight = model.height * cellSize;
 	var gridWidth = model.width * cellSize;
 	return A2(
@@ -6183,6 +6462,66 @@ var $author$project$Main$view = function (model) {
 				_List_fromArray(
 					[
 						$elm$html$Html$text('Flip random spin')
+					])),
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						A2($elm$html$Html$Attributes$style, 'margin-top', '24px')
+					]),
+				_List_fromArray(
+					[
+						$elm$html$Html$text(
+						'Temperature: ' + $elm$core$String$fromFloat(model.temperature))
+					])),
+				A2(
+				$elm$html$Html$input,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$type_('range'),
+						$elm$html$Html$Attributes$min('0.1'),
+						$elm$html$Html$Attributes$max('5.0'),
+						$elm$html$Html$Attributes$step('0.1'),
+						$elm$html$Html$Attributes$value(
+						$elm$core$String$fromFloat(model.temperature)),
+						$elm$html$Html$Events$onInput($author$project$Main$SetTemperature)
+					]),
+				_List_Nil),
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						A2($elm$html$Html$Attributes$style, 'margin-top', '20px')
+					]),
+				_List_fromArray(
+					[
+						$elm$html$Html$text(
+						'Speed: ' + ($elm$core$String$fromInt(model.updatesPerSecond) + ' updates/sec'))
+					])),
+				A2(
+				$elm$html$Html$input,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$type_('range'),
+						$elm$html$Html$Attributes$min('100'),
+						$elm$html$Html$Attributes$max('20000'),
+						$elm$html$Html$Attributes$step('100'),
+						$elm$html$Html$Attributes$value(
+						$elm$core$String$fromInt(model.updatesPerSecond)),
+						$elm$html$Html$Events$onInput($author$project$Main$SetUpdatesPerSecond)
+					]),
+				_List_Nil),
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						A2($elm$html$Html$Attributes$style, 'margin-top', '8px')
+					]),
+				_List_fromArray(
+					[
+						$elm$html$Html$text(
+						'Actual per tick: ' + $elm$core$String$fromInt(
+							$author$project$Main$updatesPerTick(model)))
 					])),
 				$author$project$Main$viewSpinGrid(model)
 			]));
