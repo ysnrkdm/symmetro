@@ -26,14 +26,23 @@ initialTemperature =
     2.5
 
 
+
+-- Exact critical temperature for the 2D square-lattice Ising model when J = 1 and k_B = 1.
+-- Below this temperature, the infinite system has non-zero spontaneous magnetization.
+
+
 criticalTemperature : Float
 criticalTemperature =
-    2.269
+    2 / logBase e (1 + sqrt 2)
 
 
 initialUpdatesPerSecond : Int
 initialUpdatesPerSecond =
     10000
+
+
+
+-- The whole application state. In Elm, the view is a pure function of this Model.
 
 
 type alias Model =
@@ -69,6 +78,10 @@ resetModel =
     )
 
 
+
+-- All events that can change the model. UI events, timer ticks, and random results all return as Msg values.
+
+
 type Msg
     = ToggleRunning
     | Reset
@@ -89,6 +102,10 @@ type alias Proposal =
     }
 
 
+
+-- A classical Ising spin. We use two colors in the UI, but physically these are +1 and -1.
+
+
 type Spin
     = Up
     | Down
@@ -102,6 +119,10 @@ spinValue spin =
 
         Down ->
             -1
+
+
+
+-- Random initial states represent a high-entropy, disordered configuration.
 
 
 randomSpin : Random.Generator Spin
@@ -122,11 +143,19 @@ randomSpins count =
     Random.list count randomSpin
 
 
+
+-- A proposal chooses one spin to try flipping and one random number for Metropolis acceptance.
+
+
 proposalGenerator : Int -> Random.Generator Proposal
 proposalGenerator spinCount =
     Random.map2 Proposal
         (Random.int 0 (spinCount - 1))
         (Random.float 0 1)
+
+
+
+-- update is the state transition function. It is pure: side effects are returned as Cmd Msg.
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -141,6 +170,7 @@ update msg model =
         Tick ->
             if model.running then
                 ( model
+                  -- Generate many local update proposals per frame, approximating one or more Monte Carlo sweeps.
                 , Random.generate GotProposals (Random.list (updatesPerTick model) (proposalGenerator (Array.length model.spins)))
                 )
 
@@ -165,6 +195,7 @@ update msg model =
                 dE =
                     deltaEnergy index model
 
+                -- Metropolis rule: always accept lower-energy moves; sometimes accept higher-energy moves.
                 accept =
                     dE <= 0 || r < e ^ (-dE / model.temperature)
             in
@@ -200,6 +231,10 @@ update msg model =
 updatesPerTick : Model -> Int
 updatesPerTick model =
     max 1 (model.updatesPerSecond // 100)
+
+
+
+-- Average spin value in [-1, 1]. Non-zero magnetization is the visible order parameter.
 
 
 magnetization : Model -> Float
@@ -333,6 +368,10 @@ flipSpin spin =
             Up
 
 
+
+-- Apply proposals sequentially. Each accepted flip is visible to later proposals, so this is asynchronous MCMC, not cellular-automaton-style synchronous update.
+
+
 applyProposals : Model -> List Proposal -> Array Spin
 applyProposals model proposals =
     List.foldl (applyProposal model) model.spins proposals
@@ -344,6 +383,7 @@ applyProposal model proposal spins =
         dE =
             deltaEnergyForSpins model.width model.height proposal.index spins
 
+        -- With h = 0, the rules are symmetric between Up and Down; the final choice is spontaneous.
         accept =
             dE <= 0 || proposal.r < e ^ (-dE / model.temperature)
     in
@@ -354,6 +394,10 @@ applyProposal model proposal spins =
         spins
 
 
+
+-- Subscriptions turn external time into Elm messages. When stopped, there are no timer events.
+
+
 subscriptions : Model -> Sub Msg
 subscriptions model =
     if model.running then
@@ -361,6 +405,10 @@ subscriptions model =
 
     else
         Sub.none
+
+
+
+-- Render the one-dimensional spin array as a two-dimensional square lattice.
 
 
 viewSpinGrid : Model -> Html Msg
@@ -414,6 +462,10 @@ spinColor spin =
             "#3b82f6"
 
 
+
+-- Sum the four nearest neighbors with periodic boundary conditions, so the grid behaves like a torus.
+
+
 neighborSumForSpins : Int -> Int -> Int -> Array Spin -> Int
 neighborSumForSpins gridWidth gridHeight index spins =
     let
@@ -438,6 +490,11 @@ neighborSumForSpins gridWidth gridHeight index spins =
         + getSpinValue (idx (row + 1) col)
         + getSpinValue (idx row (col - 1))
         + getSpinValue (idx row (col + 1))
+
+
+
+-- Energy change for flipping one spin in the ferromagnetic Ising model with J = 1 and h = 0.
+-- ΔE = 2 s_i Σ_neighbors s_j
 
 
 deltaEnergy : Int -> Model -> Float
