@@ -26,6 +26,11 @@ initialTemperature =
     2.5
 
 
+criticalTemperature : Float
+criticalTemperature =
+    2.269
+
+
 initialUpdatesPerSecond : Int
 initialUpdatesPerSecond =
     10000
@@ -74,6 +79,7 @@ type Msg
     | GotAcceptance Int Float
     | GotProposals (List Proposal)
     | SetTemperature String
+    | SetCriticalTemperature
     | SetUpdatesPerSecond String
 
 
@@ -179,6 +185,9 @@ update msg model =
                 Nothing ->
                     ( model, Cmd.none )
 
+        SetCriticalTemperature ->
+            ( { model | temperature = criticalTemperature }, Cmd.none )
+
         SetUpdatesPerSecond raw ->
             case String.toInt raw of
                 Just updatesPerSecond ->
@@ -263,7 +272,13 @@ view model =
             [ text "Reset" ]
         , div
             [ style "margin-top" "24px" ]
-            [ text ("Temperature: " ++ String.fromFloat model.temperature) ]
+            [ text ("Temperature: " ++ formatFloat 3 model.temperature) ]
+        , div
+            [ style "margin-top" "4px"
+            , style "font-size" "14px"
+            , style "color" "#666"
+            ]
+            [ text ("Critical-ish Tc ≈ " ++ formatFloat 3 criticalTemperature) ]
         , input
             [ Attr.type_ "range"
             , Attr.min "0.1"
@@ -273,6 +288,12 @@ view model =
             , onInput SetTemperature
             ]
             []
+        , button
+            [ onClick SetCriticalTemperature
+            , style "margin-top" "8px"
+            , style "margin-left" "8px"
+            ]
+            [ text "Set to critical-ish Tc" ]
         , div
             [ style "margin-top" "20px" ]
             [ text ("Speed: " ++ String.fromInt model.updatesPerSecond ++ " updates/sec") ]

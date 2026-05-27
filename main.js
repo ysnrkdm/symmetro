@@ -6040,6 +6040,7 @@ var $author$project$Main$applyProposals = F2(
 			model.spins,
 			proposals);
 	});
+var $author$project$Main$criticalTemperature = 2.269;
 var $author$project$Main$deltaEnergy = F2(
 	function (index, model) {
 		return A4($author$project$Main$deltaEnergyForSpins, model.width, model.height, index, model.spins);
@@ -6223,6 +6224,12 @@ var $author$project$Main$update = F2(
 				} else {
 					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 				}
+			case 'SetCriticalTemperature':
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{temperature: $author$project$Main$criticalTemperature}),
+					$elm$core$Platform$Cmd$none);
 			default:
 				var raw = msg.a;
 				var _v2 = $elm$core$String$toInt(raw);
@@ -6240,6 +6247,7 @@ var $author$project$Main$update = F2(
 	});
 var $author$project$Main$FlipRandomSpin = {$: 'FlipRandomSpin'};
 var $author$project$Main$Reset = {$: 'Reset'};
+var $author$project$Main$SetCriticalTemperature = {$: 'SetCriticalTemperature'};
 var $author$project$Main$SetTemperature = function (a) {
 	return {$: 'SetTemperature', a: a};
 };
@@ -6543,7 +6551,20 @@ var $author$project$Main$view = function (model) {
 				_List_fromArray(
 					[
 						$elm$html$Html$text(
-						'Temperature: ' + $elm$core$String$fromFloat(model.temperature))
+						'Temperature: ' + A2($author$project$Main$formatFloat, 3, model.temperature))
+					])),
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						A2($elm$html$Html$Attributes$style, 'margin-top', '4px'),
+						A2($elm$html$Html$Attributes$style, 'font-size', '14px'),
+						A2($elm$html$Html$Attributes$style, 'color', '#666')
+					]),
+				_List_fromArray(
+					[
+						$elm$html$Html$text(
+						'Critical-ish Tc ≈ ' + A2($author$project$Main$formatFloat, 3, $author$project$Main$criticalTemperature))
 					])),
 				A2(
 				$elm$html$Html$input,
@@ -6558,6 +6579,18 @@ var $author$project$Main$view = function (model) {
 						$elm$html$Html$Events$onInput($author$project$Main$SetTemperature)
 					]),
 				_List_Nil),
+				A2(
+				$elm$html$Html$button,
+				_List_fromArray(
+					[
+						$elm$html$Html$Events$onClick($author$project$Main$SetCriticalTemperature),
+						A2($elm$html$Html$Attributes$style, 'margin-top', '8px'),
+						A2($elm$html$Html$Attributes$style, 'margin-left', '8px')
+					]),
+				_List_fromArray(
+					[
+						$elm$html$Html$text('Set to critical-ish Tc')
+					])),
 				A2(
 				$elm$html$Html$div,
 				_List_fromArray(
