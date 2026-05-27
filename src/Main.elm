@@ -264,88 +264,261 @@ formatFloat decimals value =
 
 view : Model -> Html Msg
 view model =
-    div
-        [ style "font-family" "system-ui, sans-serif"
-        , style "padding" "32px"
-        ]
-        [ h1 [] [ text "Symmetro" ]
-        , div []
-            [ text
-                (if model.running then
-                    "Running"
+    div pageStyle
+        [ div shellStyle
+            [ div headerStyle
+                [ div []
+                    [ h1 titleStyle [ text "Symmetro" ]
+                    , div subtitleStyle [ text "An interactive Ising model for spontaneous symmetry breaking." ]
+                    ]
+                , div statusBadgeStyle
+                    [ text
+                        (if model.running then
+                            "Running"
 
-                 else
-                    "Stopped"
-                )
-            ]
-        , div
-            [ style "margin-top" "8px" ]
-            [ text ("Magnetization: " ++ formatFloat 3 (magnetization model)) ]
-        , button
-            [ onClick ToggleRunning
-            , style "margin-top" "16px"
-            ]
-            [ text
-                (if model.running then
-                    "Stop"
+                         else
+                            "Stopped"
+                        )
+                    ]
+                ]
+            , div layoutStyle
+                [ div controlPanelStyle
+                    [ div metricCardStyle
+                        [ div labelStyle [ text "Magnetization" ]
+                        , div valueStyle [ text (formatFloat 3 (magnetization model)) ]
+                        , div hintStyle [ text "Order parameter in [-1, 1]" ]
+                        ]
+                    , div buttonRowStyle
+                        [ button
+                            (primaryButtonStyle ++ [ onClick ToggleRunning ])
+                            [ text
+                                (if model.running then
+                                    "Stop"
 
-                 else
-                    "Start"
-                )
+                                 else
+                                    "Start"
+                                )
+                            ]
+                        , button
+                            (secondaryButtonStyle ++ [ onClick Reset ])
+                            [ text "Reset" ]
+                        ]
+                    , button
+                        (secondaryButtonStyle ++ [ onClick FlipRandomSpin, style "width" "100%" ])
+                        [ text "Flip random spin" ]
+                    , div sectionStyle
+                        [ div labelStyle [ text ("Temperature: " ++ formatFloat 3 model.temperature) ]
+                        , div hintStyle [ text ("Critical Tc = 2 / ln(1 + √2) ≈ " ++ formatFloat 3 criticalTemperature) ]
+                        , input
+                            (sliderStyle
+                                ++ [ Attr.type_ "range"
+                                   , Attr.min "0.1"
+                                   , Attr.max "5.0"
+                                   , Attr.step "0.1"
+                                   , Attr.value (String.fromFloat model.temperature)
+                                   , onInput SetTemperature
+                                   ]
+                            )
+                            []
+                        , button
+                            (secondaryButtonStyle ++ [ onClick SetCriticalTemperature, style "margin-top" "10px" ])
+                            [ text "Set to critical Tc" ]
+                        ]
+                    , div sectionStyle
+                        [ div labelStyle [ text ("Speed: " ++ String.fromInt model.updatesPerSecond ++ " updates/sec") ]
+                        , input
+                            (sliderStyle
+                                ++ [ Attr.type_ "range"
+                                   , Attr.min "100"
+                                   , Attr.max "50000"
+                                   , Attr.step "100"
+                                   , Attr.value (String.fromInt model.updatesPerSecond)
+                                   , onInput SetUpdatesPerSecond
+                                   ]
+                            )
+                            []
+                        , div hintStyle [ text ("Actual per tick: " ++ String.fromInt (updatesPerTick model)) ]
+                        ]
+                    ]
+                , div visualizationPanelStyle
+                    [ viewSpinGrid model ]
+                ]
             ]
-        , button
-            [ onClick FlipRandomSpin
-            , style "margin-top" "16px"
-            , style "margin-left" "8px"
-            ]
-            [ text "Flip random spin" ]
-        , button
-            [ onClick Reset
-            , style "margin-top" "16px"
-            , style "margin-left" "8px"
-            ]
-            [ text "Reset" ]
-        , div
-            [ style "margin-top" "24px" ]
-            [ text ("Temperature: " ++ formatFloat 3 model.temperature) ]
-        , div
-            [ style "margin-top" "4px"
-            , style "font-size" "14px"
-            , style "color" "#666"
-            ]
-            [ text ("Critical-ish Tc ≈ " ++ formatFloat 3 criticalTemperature) ]
-        , input
-            [ Attr.type_ "range"
-            , Attr.min "0.1"
-            , Attr.max "5.0"
-            , Attr.step "0.1"
-            , Attr.value (String.fromFloat model.temperature)
-            , onInput SetTemperature
-            ]
-            []
-        , button
-            [ onClick SetCriticalTemperature
-            , style "margin-top" "8px"
-            , style "margin-left" "8px"
-            ]
-            [ text "Set to critical-ish Tc" ]
-        , div
-            [ style "margin-top" "20px" ]
-            [ text ("Speed: " ++ String.fromInt model.updatesPerSecond ++ " updates/sec") ]
-        , input
-            [ Attr.type_ "range"
-            , Attr.min "100"
-            , Attr.max "50000"
-            , Attr.step "100"
-            , Attr.value (String.fromInt model.updatesPerSecond)
-            , onInput SetUpdatesPerSecond
-            ]
-            []
-        , div
-            [ style "margin-top" "8px" ]
-            [ text ("Actual per tick: " ++ String.fromInt (updatesPerTick model)) ]
-        , viewSpinGrid model
         ]
+
+
+pageStyle : List (Html.Attribute Msg)
+pageStyle =
+    [ style "min-height" "100vh"
+    , style "font-family" "Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+    , style "background" "radial-gradient(circle at top left, #1f2a44 0, #111827 34%, #030712 100%)"
+    , style "color" "#e5e7eb"
+    , style "padding" "32px"
+    , style "box-sizing" "border-box"
+    ]
+
+
+shellStyle : List (Html.Attribute Msg)
+shellStyle =
+    [ style "max-width" "1100px"
+    , style "margin" "0 auto"
+    ]
+
+
+headerStyle : List (Html.Attribute Msg)
+headerStyle =
+    [ style "display" "flex"
+    , style "justify-content" "space-between"
+    , style "align-items" "flex-start"
+    , style "gap" "24px"
+    , style "margin-bottom" "24px"
+    ]
+
+
+titleStyle : List (Html.Attribute Msg)
+titleStyle =
+    [ style "margin" "0"
+    , style "font-size" "48px"
+    , style "letter-spacing" "-0.05em"
+    , style "line-height" "1"
+    ]
+
+
+subtitleStyle : List (Html.Attribute Msg)
+subtitleStyle =
+    [ style "margin-top" "10px"
+    , style "color" "#9ca3af"
+    , style "font-size" "16px"
+    ]
+
+
+statusBadgeStyle : List (Html.Attribute Msg)
+statusBadgeStyle =
+    [ style "padding" "8px 12px"
+    , style "border" "1px solid rgba(148, 163, 184, 0.3)"
+    , style "border-radius" "999px"
+    , style "background" "rgba(15, 23, 42, 0.72)"
+    , style "font-size" "14px"
+    , style "color" "#cbd5e1"
+    ]
+
+
+layoutStyle : List (Html.Attribute Msg)
+layoutStyle =
+    [ style "display" "grid"
+    , style "grid-template-columns" "320px 1fr"
+    , style "gap" "24px"
+    , style "align-items" "start"
+    ]
+
+
+controlPanelStyle : List (Html.Attribute Msg)
+controlPanelStyle =
+    [ style "padding" "20px"
+    , style "border" "1px solid rgba(148, 163, 184, 0.22)"
+    , style "border-radius" "20px"
+    , style "background" "rgba(15, 23, 42, 0.72)"
+    , style "box-shadow" "0 24px 80px rgba(0, 0, 0, 0.35)"
+    , style "backdrop-filter" "blur(14px)"
+    ]
+
+
+visualizationPanelStyle : List (Html.Attribute Msg)
+visualizationPanelStyle =
+    [ style "padding" "20px"
+    , style "border" "1px solid rgba(148, 163, 184, 0.22)"
+    , style "border-radius" "20px"
+    , style "background" "rgba(3, 7, 18, 0.58)"
+    , style "box-shadow" "0 24px 80px rgba(0, 0, 0, 0.35)"
+    , style "overflow" "auto"
+    ]
+
+
+metricCardStyle : List (Html.Attribute Msg)
+metricCardStyle =
+    [ style "padding" "16px"
+    , style "border-radius" "16px"
+    , style "background" "linear-gradient(135deg, rgba(59, 130, 246, 0.18), rgba(217, 72, 72, 0.18))"
+    , style "border" "1px solid rgba(148, 163, 184, 0.2)"
+    , style "margin-bottom" "16px"
+    ]
+
+
+labelStyle : List (Html.Attribute Msg)
+labelStyle =
+    [ style "font-size" "13px"
+    , style "font-weight" "700"
+    , style "letter-spacing" "0.08em"
+    , style "text-transform" "uppercase"
+    , style "color" "#cbd5e1"
+    ]
+
+
+valueStyle : List (Html.Attribute Msg)
+valueStyle =
+    [ style "margin-top" "6px"
+    , style "font-size" "34px"
+    , style "font-weight" "800"
+    , style "letter-spacing" "-0.04em"
+    ]
+
+
+hintStyle : List (Html.Attribute Msg)
+hintStyle =
+    [ style "margin-top" "6px"
+    , style "font-size" "13px"
+    , style "line-height" "1.45"
+    , style "color" "#94a3b8"
+    ]
+
+
+sectionStyle : List (Html.Attribute Msg)
+sectionStyle =
+    [ style "margin-top" "20px"
+    ]
+
+
+buttonRowStyle : List (Html.Attribute Msg)
+buttonRowStyle =
+    [ style "display" "grid"
+    , style "grid-template-columns" "1fr 1fr"
+    , style "gap" "10px"
+    , style "margin-bottom" "10px"
+    ]
+
+
+primaryButtonStyle : List (Html.Attribute Msg)
+primaryButtonStyle =
+    buttonBaseStyle
+        ++ [ style "background" "#e5e7eb"
+           , style "color" "#020617"
+           ]
+
+
+secondaryButtonStyle : List (Html.Attribute Msg)
+secondaryButtonStyle =
+    buttonBaseStyle
+        ++ [ style "background" "rgba(15, 23, 42, 0.9)"
+           , style "color" "#e5e7eb"
+           , style "border" "1px solid rgba(148, 163, 184, 0.3)"
+           ]
+
+
+buttonBaseStyle : List (Html.Attribute Msg)
+buttonBaseStyle =
+    [ style "border" "0"
+    , style "border-radius" "12px"
+    , style "padding" "10px 12px"
+    , style "font-weight" "700"
+    , style "cursor" "pointer"
+    ]
+
+
+sliderStyle : List (Html.Attribute Msg)
+sliderStyle =
+    [ style "width" "100%"
+    , style "margin-top" "10px"
+    ]
 
 
 flipSpinAt : Int -> Array Spin -> Array Spin
@@ -427,7 +600,7 @@ viewSpinGrid model =
         [ width (String.fromInt gridWidth)
         , height (String.fromInt gridHeight)
         , viewBox ("0 0 " ++ String.fromInt gridWidth ++ " " ++ String.fromInt gridHeight)
-        , Svg.Attributes.style "display: block; margin-top: 24px;"
+        , Svg.Attributes.style "display: block;"
         ]
         (Array.toList (Array.indexedMap (viewSpinCell model.width cellSize) model.spins))
 
@@ -455,9 +628,11 @@ viewSpinCell gridWidth cellSize index spin =
 spinColor : Spin -> String
 spinColor spin =
     case spin of
+        -- Soft red.
         Up ->
             "#d94848"
 
+        -- Clear blue.
         Down ->
             "#3b82f6"
 

@@ -6040,7 +6040,11 @@ var $author$project$Main$applyProposals = F2(
 			model.spins,
 			proposals);
 	});
-var $author$project$Main$criticalTemperature = 2.269;
+var $elm$core$Basics$sqrt = _Basics_sqrt;
+var $author$project$Main$criticalTemperature = 2 / A2(
+	$elm$core$Basics$logBase,
+	$elm$core$Basics$e,
+	1 + $elm$core$Basics$sqrt(2));
 var $author$project$Main$deltaEnergy = F2(
 	function (index, model) {
 		return A4($author$project$Main$deltaEnergyForSpins, model.width, model.height, index, model.spins);
@@ -6256,6 +6260,24 @@ var $author$project$Main$SetUpdatesPerSecond = function (a) {
 };
 var $author$project$Main$ToggleRunning = {$: 'ToggleRunning'};
 var $elm$html$Html$button = _VirtualDom_node('button');
+var $elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
+var $elm$html$Html$Attributes$style = $elm$virtual_dom$VirtualDom$style;
+var $author$project$Main$buttonRowStyle = _List_fromArray(
+	[
+		A2($elm$html$Html$Attributes$style, 'display', 'grid'),
+		A2($elm$html$Html$Attributes$style, 'grid-template-columns', '1fr 1fr'),
+		A2($elm$html$Html$Attributes$style, 'gap', '10px'),
+		A2($elm$html$Html$Attributes$style, 'margin-bottom', '10px')
+	]);
+var $author$project$Main$controlPanelStyle = _List_fromArray(
+	[
+		A2($elm$html$Html$Attributes$style, 'padding', '20px'),
+		A2($elm$html$Html$Attributes$style, 'border', '1px solid rgba(148, 163, 184, 0.22)'),
+		A2($elm$html$Html$Attributes$style, 'border-radius', '20px'),
+		A2($elm$html$Html$Attributes$style, 'background', 'rgba(15, 23, 42, 0.72)'),
+		A2($elm$html$Html$Attributes$style, 'box-shadow', '0 24px 80px rgba(0, 0, 0, 0.35)'),
+		A2($elm$html$Html$Attributes$style, 'backdrop-filter', 'blur(14px)')
+	]);
 var $elm$html$Html$div = _VirtualDom_node('div');
 var $elm$core$String$fromFloat = _String_fromNumber;
 var $elm$core$Basics$round = _Basics_round;
@@ -6266,7 +6288,37 @@ var $author$project$Main$formatFloat = F2(
 		return $elm$core$String$fromFloat(rounded / scale);
 	});
 var $elm$html$Html$h1 = _VirtualDom_node('h1');
+var $author$project$Main$headerStyle = _List_fromArray(
+	[
+		A2($elm$html$Html$Attributes$style, 'display', 'flex'),
+		A2($elm$html$Html$Attributes$style, 'justify-content', 'space-between'),
+		A2($elm$html$Html$Attributes$style, 'align-items', 'flex-start'),
+		A2($elm$html$Html$Attributes$style, 'gap', '24px'),
+		A2($elm$html$Html$Attributes$style, 'margin-bottom', '24px')
+	]);
+var $author$project$Main$hintStyle = _List_fromArray(
+	[
+		A2($elm$html$Html$Attributes$style, 'margin-top', '6px'),
+		A2($elm$html$Html$Attributes$style, 'font-size', '13px'),
+		A2($elm$html$Html$Attributes$style, 'line-height', '1.45'),
+		A2($elm$html$Html$Attributes$style, 'color', '#94a3b8')
+	]);
 var $elm$html$Html$input = _VirtualDom_node('input');
+var $author$project$Main$labelStyle = _List_fromArray(
+	[
+		A2($elm$html$Html$Attributes$style, 'font-size', '13px'),
+		A2($elm$html$Html$Attributes$style, 'font-weight', '700'),
+		A2($elm$html$Html$Attributes$style, 'letter-spacing', '0.08em'),
+		A2($elm$html$Html$Attributes$style, 'text-transform', 'uppercase'),
+		A2($elm$html$Html$Attributes$style, 'color', '#cbd5e1')
+	]);
+var $author$project$Main$layoutStyle = _List_fromArray(
+	[
+		A2($elm$html$Html$Attributes$style, 'display', 'grid'),
+		A2($elm$html$Html$Attributes$style, 'grid-template-columns', '320px 1fr'),
+		A2($elm$html$Html$Attributes$style, 'gap', '24px'),
+		A2($elm$html$Html$Attributes$style, 'align-items', 'start')
+	]);
 var $elm$core$Elm$JsArray$foldl = _JsArray_foldl;
 var $elm$core$Array$foldl = F3(
 	function (func, baseCase, _v0) {
@@ -6308,6 +6360,14 @@ var $elm$html$Html$Attributes$stringProperty = F2(
 			$elm$json$Json$Encode$string(string));
 	});
 var $elm$html$Html$Attributes$max = $elm$html$Html$Attributes$stringProperty('max');
+var $author$project$Main$metricCardStyle = _List_fromArray(
+	[
+		A2($elm$html$Html$Attributes$style, 'padding', '16px'),
+		A2($elm$html$Html$Attributes$style, 'border-radius', '16px'),
+		A2($elm$html$Html$Attributes$style, 'background', 'linear-gradient(135deg, rgba(59, 130, 246, 0.18), rgba(217, 72, 72, 0.18))'),
+		A2($elm$html$Html$Attributes$style, 'border', '1px solid rgba(148, 163, 184, 0.2)'),
+		A2($elm$html$Html$Attributes$style, 'margin-bottom', '16px')
+	]);
 var $elm$html$Html$Attributes$min = $elm$html$Html$Attributes$stringProperty('min');
 var $elm$virtual_dom$VirtualDom$Normal = function (a) {
 	return {$: 'Normal', a: a};
@@ -6359,15 +6419,88 @@ var $elm$html$Html$Events$onInput = function (tagger) {
 			$elm$html$Html$Events$alwaysStop,
 			A2($elm$json$Json$Decode$map, tagger, $elm$html$Html$Events$targetValue)));
 };
+var $author$project$Main$pageStyle = _List_fromArray(
+	[
+		A2($elm$html$Html$Attributes$style, 'min-height', '100vh'),
+		A2($elm$html$Html$Attributes$style, 'font-family', 'Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, \'Segoe UI\', sans-serif'),
+		A2($elm$html$Html$Attributes$style, 'background', 'radial-gradient(circle at top left, #1f2a44 0, #111827 34%, #030712 100%)'),
+		A2($elm$html$Html$Attributes$style, 'color', '#e5e7eb'),
+		A2($elm$html$Html$Attributes$style, 'padding', '32px'),
+		A2($elm$html$Html$Attributes$style, 'box-sizing', 'border-box')
+	]);
+var $author$project$Main$buttonBaseStyle = _List_fromArray(
+	[
+		A2($elm$html$Html$Attributes$style, 'border', '0'),
+		A2($elm$html$Html$Attributes$style, 'border-radius', '12px'),
+		A2($elm$html$Html$Attributes$style, 'padding', '10px 12px'),
+		A2($elm$html$Html$Attributes$style, 'font-weight', '700'),
+		A2($elm$html$Html$Attributes$style, 'cursor', 'pointer')
+	]);
+var $author$project$Main$primaryButtonStyle = _Utils_ap(
+	$author$project$Main$buttonBaseStyle,
+	_List_fromArray(
+		[
+			A2($elm$html$Html$Attributes$style, 'background', '#e5e7eb'),
+			A2($elm$html$Html$Attributes$style, 'color', '#020617')
+		]));
+var $author$project$Main$secondaryButtonStyle = _Utils_ap(
+	$author$project$Main$buttonBaseStyle,
+	_List_fromArray(
+		[
+			A2($elm$html$Html$Attributes$style, 'background', 'rgba(15, 23, 42, 0.9)'),
+			A2($elm$html$Html$Attributes$style, 'color', '#e5e7eb'),
+			A2($elm$html$Html$Attributes$style, 'border', '1px solid rgba(148, 163, 184, 0.3)')
+		]));
+var $author$project$Main$sectionStyle = _List_fromArray(
+	[
+		A2($elm$html$Html$Attributes$style, 'margin-top', '20px')
+	]);
+var $author$project$Main$shellStyle = _List_fromArray(
+	[
+		A2($elm$html$Html$Attributes$style, 'max-width', '1100px'),
+		A2($elm$html$Html$Attributes$style, 'margin', '0 auto')
+	]);
+var $author$project$Main$sliderStyle = _List_fromArray(
+	[
+		A2($elm$html$Html$Attributes$style, 'width', '100%'),
+		A2($elm$html$Html$Attributes$style, 'margin-top', '10px')
+	]);
+var $author$project$Main$statusBadgeStyle = _List_fromArray(
+	[
+		A2($elm$html$Html$Attributes$style, 'padding', '8px 12px'),
+		A2($elm$html$Html$Attributes$style, 'border', '1px solid rgba(148, 163, 184, 0.3)'),
+		A2($elm$html$Html$Attributes$style, 'border-radius', '999px'),
+		A2($elm$html$Html$Attributes$style, 'background', 'rgba(15, 23, 42, 0.72)'),
+		A2($elm$html$Html$Attributes$style, 'font-size', '14px'),
+		A2($elm$html$Html$Attributes$style, 'color', '#cbd5e1')
+	]);
 var $elm$html$Html$Attributes$step = function (n) {
 	return A2($elm$html$Html$Attributes$stringProperty, 'step', n);
 };
-var $elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
-var $elm$html$Html$Attributes$style = $elm$virtual_dom$VirtualDom$style;
+var $author$project$Main$subtitleStyle = _List_fromArray(
+	[
+		A2($elm$html$Html$Attributes$style, 'margin-top', '10px'),
+		A2($elm$html$Html$Attributes$style, 'color', '#9ca3af'),
+		A2($elm$html$Html$Attributes$style, 'font-size', '16px')
+	]);
 var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
 var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
+var $author$project$Main$titleStyle = _List_fromArray(
+	[
+		A2($elm$html$Html$Attributes$style, 'margin', '0'),
+		A2($elm$html$Html$Attributes$style, 'font-size', '48px'),
+		A2($elm$html$Html$Attributes$style, 'letter-spacing', '-0.05em'),
+		A2($elm$html$Html$Attributes$style, 'line-height', '1')
+	]);
 var $elm$html$Html$Attributes$type_ = $elm$html$Html$Attributes$stringProperty('type');
 var $elm$html$Html$Attributes$value = $elm$html$Html$Attributes$stringProperty('value');
+var $author$project$Main$valueStyle = _List_fromArray(
+	[
+		A2($elm$html$Html$Attributes$style, 'margin-top', '6px'),
+		A2($elm$html$Html$Attributes$style, 'font-size', '34px'),
+		A2($elm$html$Html$Attributes$style, 'font-weight', '800'),
+		A2($elm$html$Html$Attributes$style, 'letter-spacing', '-0.04em')
+	]);
 var $elm$svg$Svg$Attributes$height = _VirtualDom_attribute('height');
 var $elm$core$Elm$JsArray$indexedMap = _JsArray_indexedMap;
 var $elm$core$Array$indexedMap = F2(
@@ -6459,7 +6592,7 @@ var $author$project$Main$viewSpinGrid = function (model) {
 				$elm$core$String$fromInt(gridHeight)),
 				$elm$svg$Svg$Attributes$viewBox(
 				'0 0 ' + ($elm$core$String$fromInt(gridWidth) + (' ' + $elm$core$String$fromInt(gridHeight)))),
-				$elm$svg$Svg$Attributes$style('display: block; margin-top: 24px;')
+				$elm$svg$Svg$Attributes$style('display: block;')
 			]),
 		$elm$core$Array$toList(
 			A2(
@@ -6467,167 +6600,243 @@ var $author$project$Main$viewSpinGrid = function (model) {
 				A2($author$project$Main$viewSpinCell, model.width, cellSize),
 				model.spins)));
 };
+var $author$project$Main$visualizationPanelStyle = _List_fromArray(
+	[
+		A2($elm$html$Html$Attributes$style, 'padding', '20px'),
+		A2($elm$html$Html$Attributes$style, 'border', '1px solid rgba(148, 163, 184, 0.22)'),
+		A2($elm$html$Html$Attributes$style, 'border-radius', '20px'),
+		A2($elm$html$Html$Attributes$style, 'background', 'rgba(3, 7, 18, 0.58)'),
+		A2($elm$html$Html$Attributes$style, 'box-shadow', '0 24px 80px rgba(0, 0, 0, 0.35)'),
+		A2($elm$html$Html$Attributes$style, 'overflow', 'auto')
+	]);
 var $author$project$Main$view = function (model) {
 	return A2(
 		$elm$html$Html$div,
-		_List_fromArray(
-			[
-				A2($elm$html$Html$Attributes$style, 'font-family', 'system-ui, sans-serif'),
-				A2($elm$html$Html$Attributes$style, 'padding', '32px')
-			]),
+		$author$project$Main$pageStyle,
 		_List_fromArray(
 			[
 				A2(
-				$elm$html$Html$h1,
-				_List_Nil,
-				_List_fromArray(
-					[
-						$elm$html$Html$text('Symmetro')
-					])),
-				A2(
 				$elm$html$Html$div,
-				_List_Nil,
+				$author$project$Main$shellStyle,
 				_List_fromArray(
 					[
-						$elm$html$Html$text(
-						model.running ? 'Running' : 'Stopped')
-					])),
-				A2(
-				$elm$html$Html$div,
-				_List_fromArray(
-					[
-						A2($elm$html$Html$Attributes$style, 'margin-top', '8px')
-					]),
-				_List_fromArray(
-					[
-						$elm$html$Html$text(
-						'Magnetization: ' + A2(
-							$author$project$Main$formatFloat,
-							3,
-							$author$project$Main$magnetization(model)))
-					])),
-				A2(
-				$elm$html$Html$button,
-				_List_fromArray(
-					[
-						$elm$html$Html$Events$onClick($author$project$Main$ToggleRunning),
-						A2($elm$html$Html$Attributes$style, 'margin-top', '16px')
-					]),
-				_List_fromArray(
-					[
-						$elm$html$Html$text(
-						model.running ? 'Stop' : 'Start')
-					])),
-				A2(
-				$elm$html$Html$button,
-				_List_fromArray(
-					[
-						$elm$html$Html$Events$onClick($author$project$Main$FlipRandomSpin),
-						A2($elm$html$Html$Attributes$style, 'margin-top', '16px'),
-						A2($elm$html$Html$Attributes$style, 'margin-left', '8px')
-					]),
-				_List_fromArray(
-					[
-						$elm$html$Html$text('Flip random spin')
-					])),
-				A2(
-				$elm$html$Html$button,
-				_List_fromArray(
-					[
-						$elm$html$Html$Events$onClick($author$project$Main$Reset),
-						A2($elm$html$Html$Attributes$style, 'margin-top', '16px'),
-						A2($elm$html$Html$Attributes$style, 'margin-left', '8px')
-					]),
-				_List_fromArray(
-					[
-						$elm$html$Html$text('Reset')
-					])),
-				A2(
-				$elm$html$Html$div,
-				_List_fromArray(
-					[
-						A2($elm$html$Html$Attributes$style, 'margin-top', '24px')
-					]),
-				_List_fromArray(
-					[
-						$elm$html$Html$text(
-						'Temperature: ' + A2($author$project$Main$formatFloat, 3, model.temperature))
-					])),
-				A2(
-				$elm$html$Html$div,
-				_List_fromArray(
-					[
-						A2($elm$html$Html$Attributes$style, 'margin-top', '4px'),
-						A2($elm$html$Html$Attributes$style, 'font-size', '14px'),
-						A2($elm$html$Html$Attributes$style, 'color', '#666')
-					]),
-				_List_fromArray(
-					[
-						$elm$html$Html$text(
-						'Critical-ish Tc ≈ ' + A2($author$project$Main$formatFloat, 3, $author$project$Main$criticalTemperature))
-					])),
-				A2(
-				$elm$html$Html$input,
-				_List_fromArray(
-					[
-						$elm$html$Html$Attributes$type_('range'),
-						$elm$html$Html$Attributes$min('0.1'),
-						$elm$html$Html$Attributes$max('5.0'),
-						$elm$html$Html$Attributes$step('0.1'),
-						$elm$html$Html$Attributes$value(
-						$elm$core$String$fromFloat(model.temperature)),
-						$elm$html$Html$Events$onInput($author$project$Main$SetTemperature)
-					]),
-				_List_Nil),
-				A2(
-				$elm$html$Html$button,
-				_List_fromArray(
-					[
-						$elm$html$Html$Events$onClick($author$project$Main$SetCriticalTemperature),
-						A2($elm$html$Html$Attributes$style, 'margin-top', '8px'),
-						A2($elm$html$Html$Attributes$style, 'margin-left', '8px')
-					]),
-				_List_fromArray(
-					[
-						$elm$html$Html$text('Set to critical-ish Tc')
-					])),
-				A2(
-				$elm$html$Html$div,
-				_List_fromArray(
-					[
-						A2($elm$html$Html$Attributes$style, 'margin-top', '20px')
-					]),
-				_List_fromArray(
-					[
-						$elm$html$Html$text(
-						'Speed: ' + ($elm$core$String$fromInt(model.updatesPerSecond) + ' updates/sec'))
-					])),
-				A2(
-				$elm$html$Html$input,
-				_List_fromArray(
-					[
-						$elm$html$Html$Attributes$type_('range'),
-						$elm$html$Html$Attributes$min('100'),
-						$elm$html$Html$Attributes$max('50000'),
-						$elm$html$Html$Attributes$step('100'),
-						$elm$html$Html$Attributes$value(
-						$elm$core$String$fromInt(model.updatesPerSecond)),
-						$elm$html$Html$Events$onInput($author$project$Main$SetUpdatesPerSecond)
-					]),
-				_List_Nil),
-				A2(
-				$elm$html$Html$div,
-				_List_fromArray(
-					[
-						A2($elm$html$Html$Attributes$style, 'margin-top', '8px')
-					]),
-				_List_fromArray(
-					[
-						$elm$html$Html$text(
-						'Actual per tick: ' + $elm$core$String$fromInt(
-							$author$project$Main$updatesPerTick(model)))
-					])),
-				$author$project$Main$viewSpinGrid(model)
+						A2(
+						$elm$html$Html$div,
+						$author$project$Main$headerStyle,
+						_List_fromArray(
+							[
+								A2(
+								$elm$html$Html$div,
+								_List_Nil,
+								_List_fromArray(
+									[
+										A2(
+										$elm$html$Html$h1,
+										$author$project$Main$titleStyle,
+										_List_fromArray(
+											[
+												$elm$html$Html$text('Symmetro')
+											])),
+										A2(
+										$elm$html$Html$div,
+										$author$project$Main$subtitleStyle,
+										_List_fromArray(
+											[
+												$elm$html$Html$text('An interactive Ising model for spontaneous symmetry breaking.')
+											]))
+									])),
+								A2(
+								$elm$html$Html$div,
+								$author$project$Main$statusBadgeStyle,
+								_List_fromArray(
+									[
+										$elm$html$Html$text(
+										model.running ? 'Running' : 'Stopped')
+									]))
+							])),
+						A2(
+						$elm$html$Html$div,
+						$author$project$Main$layoutStyle,
+						_List_fromArray(
+							[
+								A2(
+								$elm$html$Html$div,
+								$author$project$Main$controlPanelStyle,
+								_List_fromArray(
+									[
+										A2(
+										$elm$html$Html$div,
+										$author$project$Main$metricCardStyle,
+										_List_fromArray(
+											[
+												A2(
+												$elm$html$Html$div,
+												$author$project$Main$labelStyle,
+												_List_fromArray(
+													[
+														$elm$html$Html$text('Magnetization')
+													])),
+												A2(
+												$elm$html$Html$div,
+												$author$project$Main$valueStyle,
+												_List_fromArray(
+													[
+														$elm$html$Html$text(
+														A2(
+															$author$project$Main$formatFloat,
+															3,
+															$author$project$Main$magnetization(model)))
+													])),
+												A2(
+												$elm$html$Html$div,
+												$author$project$Main$hintStyle,
+												_List_fromArray(
+													[
+														$elm$html$Html$text('Order parameter in [-1, 1]')
+													]))
+											])),
+										A2(
+										$elm$html$Html$div,
+										$author$project$Main$buttonRowStyle,
+										_List_fromArray(
+											[
+												A2(
+												$elm$html$Html$button,
+												_Utils_ap(
+													$author$project$Main$primaryButtonStyle,
+													_List_fromArray(
+														[
+															$elm$html$Html$Events$onClick($author$project$Main$ToggleRunning)
+														])),
+												_List_fromArray(
+													[
+														$elm$html$Html$text(
+														model.running ? 'Stop' : 'Start')
+													])),
+												A2(
+												$elm$html$Html$button,
+												_Utils_ap(
+													$author$project$Main$secondaryButtonStyle,
+													_List_fromArray(
+														[
+															$elm$html$Html$Events$onClick($author$project$Main$Reset)
+														])),
+												_List_fromArray(
+													[
+														$elm$html$Html$text('Reset')
+													]))
+											])),
+										A2(
+										$elm$html$Html$button,
+										_Utils_ap(
+											$author$project$Main$secondaryButtonStyle,
+											_List_fromArray(
+												[
+													$elm$html$Html$Events$onClick($author$project$Main$FlipRandomSpin),
+													A2($elm$html$Html$Attributes$style, 'width', '100%')
+												])),
+										_List_fromArray(
+											[
+												$elm$html$Html$text('Flip random spin')
+											])),
+										A2(
+										$elm$html$Html$div,
+										$author$project$Main$sectionStyle,
+										_List_fromArray(
+											[
+												A2(
+												$elm$html$Html$div,
+												$author$project$Main$labelStyle,
+												_List_fromArray(
+													[
+														$elm$html$Html$text(
+														'Temperature: ' + A2($author$project$Main$formatFloat, 3, model.temperature))
+													])),
+												A2(
+												$elm$html$Html$div,
+												$author$project$Main$hintStyle,
+												_List_fromArray(
+													[
+														$elm$html$Html$text(
+														'Critical Tc = 2 / ln(1 + √2) ≈ ' + A2($author$project$Main$formatFloat, 3, $author$project$Main$criticalTemperature))
+													])),
+												A2(
+												$elm$html$Html$input,
+												_Utils_ap(
+													$author$project$Main$sliderStyle,
+													_List_fromArray(
+														[
+															$elm$html$Html$Attributes$type_('range'),
+															$elm$html$Html$Attributes$min('0.1'),
+															$elm$html$Html$Attributes$max('5.0'),
+															$elm$html$Html$Attributes$step('0.1'),
+															$elm$html$Html$Attributes$value(
+															$elm$core$String$fromFloat(model.temperature)),
+															$elm$html$Html$Events$onInput($author$project$Main$SetTemperature)
+														])),
+												_List_Nil),
+												A2(
+												$elm$html$Html$button,
+												_Utils_ap(
+													$author$project$Main$secondaryButtonStyle,
+													_List_fromArray(
+														[
+															$elm$html$Html$Events$onClick($author$project$Main$SetCriticalTemperature),
+															A2($elm$html$Html$Attributes$style, 'margin-top', '10px')
+														])),
+												_List_fromArray(
+													[
+														$elm$html$Html$text('Set to critical Tc')
+													]))
+											])),
+										A2(
+										$elm$html$Html$div,
+										$author$project$Main$sectionStyle,
+										_List_fromArray(
+											[
+												A2(
+												$elm$html$Html$div,
+												$author$project$Main$labelStyle,
+												_List_fromArray(
+													[
+														$elm$html$Html$text(
+														'Speed: ' + ($elm$core$String$fromInt(model.updatesPerSecond) + ' updates/sec'))
+													])),
+												A2(
+												$elm$html$Html$input,
+												_Utils_ap(
+													$author$project$Main$sliderStyle,
+													_List_fromArray(
+														[
+															$elm$html$Html$Attributes$type_('range'),
+															$elm$html$Html$Attributes$min('100'),
+															$elm$html$Html$Attributes$max('50000'),
+															$elm$html$Html$Attributes$step('100'),
+															$elm$html$Html$Attributes$value(
+															$elm$core$String$fromInt(model.updatesPerSecond)),
+															$elm$html$Html$Events$onInput($author$project$Main$SetUpdatesPerSecond)
+														])),
+												_List_Nil),
+												A2(
+												$elm$html$Html$div,
+												$author$project$Main$hintStyle,
+												_List_fromArray(
+													[
+														$elm$html$Html$text(
+														'Actual per tick: ' + $elm$core$String$fromInt(
+															$author$project$Main$updatesPerTick(model)))
+													]))
+											]))
+									])),
+								A2(
+								$elm$html$Html$div,
+								$author$project$Main$visualizationPanelStyle,
+								_List_fromArray(
+									[
+										$author$project$Main$viewSpinGrid(model)
+									]))
+							]))
+					]))
 			]));
 };
 var $author$project$Main$main = $elm$browser$Browser$element(
