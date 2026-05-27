@@ -11,6 +11,26 @@ import Svg.Attributes exposing (fill, height, stroke, viewBox, width, x, y)
 import Time
 
 
+initialWidth : Int
+initialWidth =
+    50
+
+
+initialHeight : Int
+initialHeight =
+    50
+
+
+initialTemperature : Float
+initialTemperature =
+    2.5
+
+
+initialUpdatesPerSecond : Int
+initialUpdatesPerSecond =
+    10000
+
+
 type alias Model =
     { running : Bool
     , spins : Array Spin
@@ -23,26 +43,30 @@ type alias Model =
 
 init : () -> ( Model, Cmd Msg )
 init _ =
-    let
-        initialWidth =
-            50
+    resetModel
 
-        initialHeight =
-            50
-    in
-    ( { running = False
-      , spins = Array.empty
-      , width = initialWidth
-      , height = initialHeight
-      , temperature = 2.5
-      , updatesPerSecond = 10000
-      }
+
+initialModel : Model
+initialModel =
+    { running = False
+    , spins = Array.empty
+    , width = initialWidth
+    , height = initialHeight
+    , temperature = initialTemperature
+    , updatesPerSecond = initialUpdatesPerSecond
+    }
+
+
+resetModel : ( Model, Cmd Msg )
+resetModel =
+    ( initialModel
     , Random.generate GotInitialSpins (randomSpins (initialWidth * initialHeight))
     )
 
 
 type Msg
     = ToggleRunning
+    | Reset
     | Tick
     | FlipRandomSpin
     | GotInitialSpins (List Spin)
@@ -104,6 +128,9 @@ update msg model =
     case msg of
         ToggleRunning ->
             ( { model | running = not model.running }, Cmd.none )
+
+        Reset ->
+            resetModel
 
         Tick ->
             if model.running then
@@ -200,6 +227,12 @@ view model =
             , style "margin-left" "8px"
             ]
             [ text "Flip random spin" ]
+        , button
+            [ onClick Reset
+            , style "margin-top" "16px"
+            , style "margin-left" "8px"
+            ]
+            [ text "Reset" ]
         , div
             [ style "margin-top" "24px" ]
             [ text ("Temperature: " ++ String.fromFloat model.temperature) ]

@@ -5360,6 +5360,11 @@ var $elm$random$Random$generate = F2(
 			$elm$random$Random$Generate(
 				A2($elm$random$Random$map, tagger, generator)));
 	});
+var $author$project$Main$initialHeight = 50;
+var $author$project$Main$initialTemperature = 2.5;
+var $author$project$Main$initialUpdatesPerSecond = 10000;
+var $author$project$Main$initialWidth = 50;
+var $author$project$Main$initialModel = {height: $author$project$Main$initialHeight, running: false, spins: $elm$core$Array$empty, temperature: $author$project$Main$initialTemperature, updatesPerSecond: $author$project$Main$initialUpdatesPerSecond, width: $author$project$Main$initialWidth};
 var $elm$random$Random$listHelp = F4(
 	function (revList, n, gen, seed) {
 		listHelp:
@@ -5443,15 +5448,14 @@ var $author$project$Main$randomSpin = A2(
 var $author$project$Main$randomSpins = function (count) {
 	return A2($elm$random$Random$list, count, $author$project$Main$randomSpin);
 };
+var $author$project$Main$resetModel = _Utils_Tuple2(
+	$author$project$Main$initialModel,
+	A2(
+		$elm$random$Random$generate,
+		$author$project$Main$GotInitialSpins,
+		$author$project$Main$randomSpins($author$project$Main$initialWidth * $author$project$Main$initialHeight)));
 var $author$project$Main$init = function (_v0) {
-	var initialWidth = 50;
-	var initialHeight = 50;
-	return _Utils_Tuple2(
-		{height: initialHeight, running: false, spins: $elm$core$Array$empty, temperature: 2.5, updatesPerSecond: 10000, width: initialWidth},
-		A2(
-			$elm$random$Random$generate,
-			$author$project$Main$GotInitialSpins,
-			$author$project$Main$randomSpins(initialWidth * initialHeight)));
+	return $author$project$Main$resetModel;
 };
 var $author$project$Main$Tick = {$: 'Tick'};
 var $elm$time$Time$Every = F2(
@@ -6143,6 +6147,8 @@ var $author$project$Main$update = F2(
 						model,
 						{running: !model.running}),
 					$elm$core$Platform$Cmd$none);
+			case 'Reset':
+				return $author$project$Main$resetModel;
 			case 'Tick':
 				return model.running ? _Utils_Tuple2(
 					model,
@@ -6233,6 +6239,7 @@ var $author$project$Main$update = F2(
 		}
 	});
 var $author$project$Main$FlipRandomSpin = {$: 'FlipRandomSpin'};
+var $author$project$Main$Reset = {$: 'Reset'};
 var $author$project$Main$SetTemperature = function (a) {
 	return {$: 'SetTemperature', a: a};
 };
@@ -6462,6 +6469,18 @@ var $author$project$Main$view = function (model) {
 				_List_fromArray(
 					[
 						$elm$html$Html$text('Flip random spin')
+					])),
+				A2(
+				$elm$html$Html$button,
+				_List_fromArray(
+					[
+						$elm$html$Html$Events$onClick($author$project$Main$Reset),
+						A2($elm$html$Html$Attributes$style, 'margin-top', '16px'),
+						A2($elm$html$Html$Attributes$style, 'margin-left', '8px')
+					]),
+				_List_fromArray(
+					[
+						$elm$html$Html$text('Reset')
 					])),
 				A2(
 				$elm$html$Html$div,
