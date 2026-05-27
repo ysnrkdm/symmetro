@@ -6250,8 +6250,47 @@ var $author$project$Main$ToggleRunning = {$: 'ToggleRunning'};
 var $elm$html$Html$button = _VirtualDom_node('button');
 var $elm$html$Html$div = _VirtualDom_node('div');
 var $elm$core$String$fromFloat = _String_fromNumber;
+var $elm$core$Basics$round = _Basics_round;
+var $author$project$Main$formatFloat = F2(
+	function (decimals, value) {
+		var scale = A2($elm$core$Basics$pow, 10, decimals);
+		var rounded = $elm$core$Basics$round(value * scale);
+		return $elm$core$String$fromFloat(rounded / scale);
+	});
 var $elm$html$Html$h1 = _VirtualDom_node('h1');
 var $elm$html$Html$input = _VirtualDom_node('input');
+var $elm$core$Elm$JsArray$foldl = _JsArray_foldl;
+var $elm$core$Array$foldl = F3(
+	function (func, baseCase, _v0) {
+		var tree = _v0.c;
+		var tail = _v0.d;
+		var helper = F2(
+			function (node, acc) {
+				if (node.$ === 'SubTree') {
+					var subTree = node.a;
+					return A3($elm$core$Elm$JsArray$foldl, helper, acc, subTree);
+				} else {
+					var values = node.a;
+					return A3($elm$core$Elm$JsArray$foldl, func, acc, values);
+				}
+			});
+		return A3(
+			$elm$core$Elm$JsArray$foldl,
+			func,
+			A3($elm$core$Elm$JsArray$foldl, helper, baseCase, tree),
+			tail);
+	});
+var $author$project$Main$magnetization = function (model) {
+	var spinCount = $elm$core$Array$length(model.spins);
+	return (!spinCount) ? 0 : (A3(
+		$elm$core$Array$foldl,
+		F2(
+			function (spin, total) {
+				return $author$project$Main$spinValue(spin) + total;
+			}),
+		0,
+		model.spins) / spinCount);
+};
 var $elm$json$Json$Encode$string = _Json_wrap;
 var $elm$html$Html$Attributes$stringProperty = F2(
 	function (key, string) {
@@ -6322,7 +6361,6 @@ var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
 var $elm$html$Html$Attributes$type_ = $elm$html$Html$Attributes$stringProperty('type');
 var $elm$html$Html$Attributes$value = $elm$html$Html$Attributes$stringProperty('value');
 var $elm$svg$Svg$Attributes$height = _VirtualDom_attribute('height');
-var $elm$core$Elm$JsArray$foldl = _JsArray_foldl;
 var $elm$core$Elm$JsArray$indexedMap = _JsArray_indexedMap;
 var $elm$core$Array$indexedMap = F2(
 	function (func, _v0) {
@@ -6447,6 +6485,20 @@ var $author$project$Main$view = function (model) {
 						model.running ? 'Running' : 'Stopped')
 					])),
 				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						A2($elm$html$Html$Attributes$style, 'margin-top', '8px')
+					]),
+				_List_fromArray(
+					[
+						$elm$html$Html$text(
+						'Magnetization: ' + A2(
+							$author$project$Main$formatFloat,
+							3,
+							$author$project$Main$magnetization(model)))
+					])),
+				A2(
 				$elm$html$Html$button,
 				_List_fromArray(
 					[
@@ -6523,7 +6575,7 @@ var $author$project$Main$view = function (model) {
 					[
 						$elm$html$Html$Attributes$type_('range'),
 						$elm$html$Html$Attributes$min('100'),
-						$elm$html$Html$Attributes$max('20000'),
+						$elm$html$Html$Attributes$max('50000'),
 						$elm$html$Html$Attributes$step('100'),
 						$elm$html$Html$Attributes$value(
 						$elm$core$String$fromInt(model.updatesPerSecond)),

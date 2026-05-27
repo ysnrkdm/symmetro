@@ -193,6 +193,31 @@ updatesPerTick model =
     max 1 (model.updatesPerSecond // 100)
 
 
+magnetization : Model -> Float
+magnetization model =
+    let
+        spinCount =
+            Array.length model.spins
+    in
+    if spinCount == 0 then
+        0
+
+    else
+        toFloat (Array.foldl (\spin total -> spinValue spin + total) 0 model.spins) / toFloat spinCount
+
+
+formatFloat : Int -> Float -> String
+formatFloat decimals value =
+    let
+        scale =
+            10 ^ decimals
+
+        rounded =
+            round (value * toFloat scale)
+    in
+    String.fromFloat (toFloat rounded / toFloat scale)
+
+
 view : Model -> Html Msg
 view model =
     div
@@ -209,6 +234,9 @@ view model =
                     "Stopped"
                 )
             ]
+        , div
+            [ style "margin-top" "8px" ]
+            [ text ("Magnetization: " ++ formatFloat 3 (magnetization model)) ]
         , button
             [ onClick ToggleRunning
             , style "margin-top" "16px"
@@ -251,7 +279,7 @@ view model =
         , input
             [ Attr.type_ "range"
             , Attr.min "100"
-            , Attr.max "20000"
+            , Attr.max "50000"
             , Attr.step "100"
             , Attr.value (String.fromInt model.updatesPerSecond)
             , onInput SetUpdatesPerSecond
